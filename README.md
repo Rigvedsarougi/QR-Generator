@@ -42,7 +42,8 @@ streamlit run app.py
 
 ## Demo
 
-![Unique QR Code Generator Demo](demo.gif)
+![image](https://github.com/Rigvedsarougi/QR-Generator/assets/117500784/1246aea0-d590-414d-95d4-1a7645df0895)
+
 
 ## Future Enhancements
 
