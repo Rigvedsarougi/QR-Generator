@@ -1,5 +1,3 @@
-# QR-Generator
-
 # Unique QR Code Generator
 
 This is a simple Streamlit app that generates unique QR codes for provided data.
