@@ -38,7 +38,7 @@ cd unique-qr-code-generator
 streamlit run app.py
 
 
-3. Access the app in your web browser at [http://localhost:8501](http://localhost:8501).
+3. Access the app in your web browser at [[http://localhost:8501](https://qr-generator-rigvedsarougi.streamlit.app/)]([http://localhost:8501](https://qr-generator-rigvedsarougi.streamlit.app/)).
 
 ## Demo
 
