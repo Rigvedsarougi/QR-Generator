@@ -1,2 +1,6 @@
 streamlit
 qrcode
+streamlit
+qrcode[pil]
+python-barcode
+pillow
