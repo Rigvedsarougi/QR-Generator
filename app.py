@@ -3,12 +3,14 @@ import qrcode
 import uuid
 import io
 
-def generate_unique_qr(data):
-    # Generate a unique ID
-    unique_id = str(uuid.uuid4())
-    
-    # Concatenate the data with the unique ID
-    data_with_id = f"{data}-{unique_id}"
+def generate_unique_qr(data, is_url=False):
+    # If the data is a URL, don't add a unique ID
+    if is_url:
+        data_with_id = data
+    else:
+        # Generate a unique ID and concatenate
+        unique_id = str(uuid.uuid4())
+        data_with_id = f"{data}-{unique_id}"
     
     # Generate QR code
     qr = qrcode.QRCode(
@@ -28,27 +30,33 @@ def generate_unique_qr(data):
     qr_img.save(img_byte_arr, format='PNG')
     img_byte_arr = img_byte_arr.getvalue()
     
-    return img_byte_arr, unique_id
+    return img_byte_arr, data_with_id
 
 # Streamlit UI
 st.title("QR Code Generator")
 
 # Input field for user to enter data
-data = st.text_input("Enter data to encode in QR code")
+data = st.text_input("Enter data to encode in QR code (e.g., URL or text)")
+
+# Checkbox to indicate if the data is a URL
+is_url = st.checkbox("Is this a URL?")
 
 # Button to generate QR code
 if st.button("Generate QR Code"):
     if data:
-        qr_img_bytes, unique_id = generate_unique_qr(data)
-        # Updated to use use_container_width instead of use_column_width
-        st.image(qr_img_bytes, caption=f"QR code with unique ID: {unique_id}", use_container_width=True)
+        qr_img_bytes, generated_data = generate_unique_qr(data, is_url=is_url)
+        st.image(qr_img_bytes, caption=f"QR Code for: {generated_data}", use_container_width=True)
+        
+        # If the data is a URL, provide a clickable link
+        if is_url:
+            st.markdown(f"[Click here to open the link]({generated_data})")
         
         # Display user information
         st.markdown("### Made by:")
         st.write(
             "Name: Rigved Sarougi",
-            "Email: irigved2000@gmail.com",
+            "Email: rigvedsarougi@gmail.com",
             "LinkedIn: [Rigved Sarougi](https://www.linkedin.com/in/rigved-sarougi/)"
         )
     else:
-        st.warning("Please enter some data to generate QR code.")
+        st.warning("Please enter some data to generate a QR code.")
