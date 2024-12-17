@@ -24,11 +24,14 @@ def generate_qr_code(data):
     return img_byte_arr.getvalue()
 
 # Function to generate a barcode
-def generate_barcode(data):
+def generate_barcode(data, textless=False):
     # Generate barcode using Code128
     barcode = Code128(data, writer=ImageWriter())
     img_byte_arr = io.BytesIO()
-    barcode.write(img_byte_arr)
+
+    # Option to hide text below the barcode
+    options = {"write_text": not textless}  # If textless=True, hide the text
+    barcode.write(img_byte_arr, options=options)
     return img_byte_arr.getvalue()
 
 # Streamlit UI
@@ -51,6 +54,9 @@ else:
 st.header("Choose Code Type")
 code_type = st.radio("Select Code Type", ["QR Code", "Barcode"])
 
+# Option for textless barcode
+textless_option = st.checkbox("Generate Textless Barcode (Hide Text Underneath)")
+
 # Generate code on button click
 if st.button("Generate Code"):
     if product_data:
@@ -58,7 +64,7 @@ if st.button("Generate Code"):
             qr_image = generate_qr_code(product_data)
             st.image(qr_image, caption="Generated QR Code", use_container_width=True)
         elif code_type == "Barcode":
-            barcode_image = generate_barcode(product_id)  # Barcodes typically use only product ID
+            barcode_image = generate_barcode(product_id, textless=textless_option)
             st.image(barcode_image, caption="Generated Barcode", use_container_width=True)
         
         # Display the product details
