@@ -40,12 +40,15 @@ data = st.text_input("Enter data to encode in QR code")
 if st.button("Generate QR Code"):
     if data:
         qr_img_bytes, unique_id = generate_unique_qr(data)
-        st.image(qr_img_bytes, caption=f"QR code with unique ID: {unique_id}", use_column_width=True)
+        # Updated to use use_container_width instead of use_column_width
+        st.image(qr_img_bytes, caption=f"QR code with unique ID: {unique_id}", use_container_width=True)
         
         # Display user information
         st.markdown("### Made by:")
-        st.write("Name: Rigved Sarougi", "Email: irigved2000@gmail.com", "LinkedIn: [Rigved Sarougi](https://www.linkedin.com/in/rigved-sarougi/)")
-
-        
+        st.write(
+            "Name: Rigved Sarougi",
+            "Email: irigved2000@gmail.com",
+            "LinkedIn: [Rigved Sarougi](https://www.linkedin.com/in/rigved-sarougi/)"
+        )
     else:
         st.warning("Please enter some data to generate QR code.")
