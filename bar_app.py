@@ -29,8 +29,12 @@ def generate_barcode(data, textless=False):
     barcode = Code128(data, writer=ImageWriter())
     img_byte_arr = io.BytesIO()
 
-    # Option to hide text below the barcode
-    options = {"write_text": not textless}  # If textless=True, hide the text
+    # Options to customize barcode rendering
+    options = {
+        "write_text": not textless,  # Hide or show text under barcode
+        "text_distance": 2,  # Adjust distance between barcode and text
+        "font_size": 10,     # Set text size
+    }
     barcode.write(img_byte_arr, options=options)
     return img_byte_arr.getvalue()
 
