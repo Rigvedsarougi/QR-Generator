@@ -58,5 +58,13 @@ if st.button("Generate QR Code"):
             "Email: rigvedsarougi@gmail.com",
             "LinkedIn: [Rigved Sarougi](https://www.linkedin.com/in/rigved-sarougi/)"
         )
+
+        # Add download button for QR code image
+        st.download_button(
+            label="Download QR Code",
+            data=qr_img_bytes,
+            file_name="generated_qr_code.png",
+            mime="image/png"
+        )
     else:
         st.warning("Please enter some data to generate a QR code.")
