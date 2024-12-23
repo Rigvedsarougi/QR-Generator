@@ -9,13 +9,18 @@ from PIL import Image
 
 # Function to generate a barcode for a single product
 def generate_barcode(product_id, textless=False):
-    # Ensure the product ID is formatted as a plain string
-    product_id = str(int(float(product_id)))  # Convert to integer and back to string
+    # Ensure the product_id is a string and handle edge cases like leading zeros
+    product_id = str(product_id).strip()
+    
     # Generate barcode using Code128
     barcode = Code128(product_id, writer=ImageWriter())
+    
+    # Barcode options: if textless=True, remove the text (including numbers like '0')
+    options = {"write_text": not textless}
+    
     img_byte_arr = io.BytesIO()
-    options = {"write_text": not textless}  # Hide text if textless=True
     barcode.write(img_byte_arr, options=options)
+    
     return img_byte_arr.getvalue()
 
 # Streamlit UI
