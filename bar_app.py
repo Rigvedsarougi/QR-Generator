@@ -5,22 +5,16 @@ from barcode.writer import ImageWriter
 import io
 import zipfile
 import os
+from PIL import Image
 
 # Function to generate a barcode for a single product
 def generate_barcode(product_id, textless=False):
-    # Generate barcode using Code128 with customized options
+    # Ensure the product ID is formatted as a plain string
+    product_id = str(int(float(product_id)))  # Convert to integer and back to string
+    # Generate barcode using Code128
     barcode = Code128(product_id, writer=ImageWriter())
     img_byte_arr = io.BytesIO()
-
-    # Customize barcode options
-    options = {
-        "write_text": not textless,  # Show or hide text
-        "text_distance": 2,  # Distance between text and barcode lines
-        "font_size": 10,  # Adjust text size
-        "module_height": 15,  # Adjust barcode height
-        "module_width": 0.2,  # Adjust barcode width
-    }
-
+    options = {"write_text": not textless}  # Hide text if textless=True
     barcode.write(img_byte_arr, options=options)
     return img_byte_arr.getvalue()
 
