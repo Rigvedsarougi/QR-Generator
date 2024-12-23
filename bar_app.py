@@ -7,7 +7,7 @@ import zipfile
 import os
 from PIL import Image
 
-# Function to generate a barcode with text integrated into the lines
+# Function to generate a barcode for a single product
 def generate_barcode(product_id, textless=False):
     # Ensure the product_id is a string and handle edge cases like leading zeros
     product_id = str(product_id).strip()
@@ -15,8 +15,8 @@ def generate_barcode(product_id, textless=False):
     # Generate barcode using Code128
     barcode = Code128(product_id, writer=ImageWriter())
     
-    # Barcode options: we remove the space between the barcode and text
-    options = {"write_text": not textless, "text_distance": -2}  # Negative value brings text closer to the bars
+    # Barcode options: if textless=True, remove the text (including numbers like '0')
+    options = {"write_text": not textless}
     
     img_byte_arr = io.BytesIO()
     barcode.write(img_byte_arr, options=options)
@@ -30,10 +30,10 @@ st.title("Bulk Product Barcode Generator")
 st.markdown("""
 ### Instructions:
 1. Prepare a CSV file with the following columns:
-   - `Product Name`
-   - `Product ID` (required)
-   - `Price`
-   - `Description`
+   - Product Name
+   - Product ID (required)
+   - Price
+   - Description
 2. Upload the file, and select options below to generate barcodes.
 """)
 
@@ -68,7 +68,7 @@ if uploaded_file is not None:
                 price = row.get("Price", "N/A")
                 description = row.get("Description", "")
 
-                # Generate barcode with integrated text
+                # Generate barcode
                 barcode_image = generate_barcode(product_id, textless=textless_option)
 
                 # Save barcode image to the temporary directory
