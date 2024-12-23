@@ -1,10 +1,9 @@
 import streamlit as st
 import qrcode
-import uuid
 import io
 from barcode import Code128
 from barcode.writer import ImageWriter
-from PIL import Image
+from PIL import Image, ImageDraw
 
 # Function to generate a QR code
 def generate_qr_code(data):
@@ -24,18 +23,29 @@ def generate_qr_code(data):
     return img_byte_arr.getvalue()
 
 # Function to generate a barcode
-def generate_barcode(data, textless=False):
+def generate_barcode_with_line_extension(data, textless=False):
     # Generate barcode using Code128
     barcode = Code128(data, writer=ImageWriter())
     img_byte_arr = io.BytesIO()
+    barcode.write(img_byte_arr, options={"write_text": not textless})
+    img_byte_arr.seek(0)
+    
+    # Open the barcode image as a PIL Image
+    barcode_image = Image.open(img_byte_arr)
+    width, height = barcode_image.size
 
-    # Options to customize barcode rendering
-    options = {
-        "write_text": not textless,  # Hide or show text under barcode
-        "text_distance": 2,  # Adjust distance between barcode and text
-        "font_size": 10,     # Set text size
-    }
-    barcode.write(img_byte_arr, options=options)
+    # Extend some barcode lines
+    draw = ImageDraw.Draw(barcode_image)
+    line_extension_height = 20  # Extend some lines by 20 pixels
+
+    # Example: Extend every 5th line
+    for x in range(0, width, 4):  # Adjust step for thicker/thinner bar selection
+        if (x // 4) % 5 == 0:  # Modify this condition to change which lines extend
+            draw.line((x, 0, x, height + line_extension_height), fill="black", width=1)
+
+    # Return the modified barcode image as bytes
+    img_byte_arr = io.BytesIO()
+    barcode_image.save(img_byte_arr, format="PNG")
     return img_byte_arr.getvalue()
 
 # Streamlit UI
@@ -68,10 +78,10 @@ if st.button("Generate Code"):
             qr_image = generate_qr_code(product_data)
             st.image(qr_image, caption="Generated QR Code", use_container_width=True)
         elif code_type == "Barcode":
-            barcode_image = generate_barcode(product_id, textless=textless_option)
+            barcode_image = generate_barcode_with_line_extension(product_id, textless=textless_option)
             st.image(barcode_image, caption="Generated Barcode", use_container_width=True)
         
-        # Display the product details
+        # Display product details
         st.subheader("Product Details:")
         st.text(f"Name: {product_name}")
         st.text(f"ID: {product_id}")
